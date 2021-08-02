@@ -5,24 +5,11 @@ import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
 
 public interface Groupable {
-
     boolean hasChildren();
-
-    ArrayList<Groupable> getChildren();
 
     boolean contains(double x, double y);
 
-    boolean handleContains(double x, double y);
-
-    void draw(GraphicsContext gc);
-
-    void drawSelected(GraphicsContext gc);
-
-    void move(double dx, double dy);
-
-    void rotate(double dT);
-
-    void rotate(double dT, double otherCX, double otherCY);
+    ArrayList<Groupable> getChildren();
 
     double getLeft();
 
@@ -32,5 +19,10 @@ public interface Groupable {
 
     double getBottom();
 
-    Groupable duplicate();
+    void move(double dx, double dy);
+
+    void draw(GraphicsContext gc);
+
+    void drawSelected(GraphicsContext gc);
+
 }
