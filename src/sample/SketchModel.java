@@ -1,63 +1,48 @@
 package sample;
 
+import javafx.scene.canvas.GraphicsContext;
+
 import java.util.ArrayList;
 
 public class SketchModel {
-    ArrayList<SketchModelListener> subscribers;
-    ArrayList<Groupable> items;
+    ArrayList<XLine> items;
+    XLine selectedShape;
+    InkPath ink;
+    GraphicsContext gc;
 
-    public SketchModel(){
+
+    public SketchModel() {
         items = new ArrayList<>();
-        subscribers = new ArrayList<>();
+        ink = new InkPath();
     }
 
-    public void addRectangle(double left, double top, double right, double bottom){
-        items.add(new XRectangle(left, top, right, bottom));
-        notifySubscribers();
+    public void setGraphicsContext(GraphicsContext gcNew) {
+        gc = gcNew;
     }
 
-    public void addTriangle(double left, double top, double right, double bottom){
-        items.add(new XTriangle(left, top, right, bottom));
+    public void addLine(double x1, double y1, double x2, double y2) {
+        XLine xline = new XLine(x1, y1, x2, y2);
+//        items.add(xline);
+        xline.draw(gc);
     }
 
-    public void addLine(double x1, double x2, double y1, double y2){
-        items.add(new XLine(x1, x2, y1, y2));
+    public void startInk(double x, double y) {
+        ink.start(x, y);
     }
 
-    public boolean checkHit(double x, double y){
-        return items.stream()
-                .anyMatch(item -> item.contains(x, y));
+    public void continueInk(double x, double y) {
+        ink.addPoint(x, y);
     }
 
-    public Groupable whichItem(double x, double y){
-        Groupable found = null;
-        for(Groupable g: items){
-            if(g.contains(x, y)){
-                found = g;
-            }
-        }
-        return found;
+    public void moveShapes(double dX, double dY) {
+        items.get(0).move(dX, dY);
     }
 
-    public void moveShapes(ArrayList<Groupable> selectionSet, double dX, double dY){
-        selectionSet.forEach(xs -> xs.move(dX, dY));
-        notifySubscribers();
+    public void finishInk() {
+        ink.calculateLength();
+        ink.calculateRatios();
     }
-
-//    public Groupable createGroup(ArrayList<Groupable> selectionSet){
-//        XShapeGroup
-//    }
-
-    public void addItems(ArrayList<Groupable> gs){
-        gs.forEach(g -> items.add(g));
-        notifySubscribers();
-    }
-
-    public void addSubscriber(SketchModelListener aSub) {
-        subscribers.add(aSub);
-    }
-
-    private void notifySubscribers() {
-        subscribers.forEach(sub -> sub.modelChanged());
+    public void clearInk() {
+        ink.clear();
     }
 }
