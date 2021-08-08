@@ -3,7 +3,7 @@ package sample;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class XLine {
+public class XLine extends XShape{
     double ratioA, ratioB, ratioC;
     double length;
     double[] xs, ys, hxs, hys;

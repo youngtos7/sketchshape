@@ -4,6 +4,7 @@ import javafx.scene.input.MouseEvent;
 
 
 public class SketchController {
+    InteractionModel interactionModel;
     SketchModel model;
     SketchView view;
     double prevX, prevY;
@@ -18,12 +19,12 @@ public class SketchController {
         currentState = State.READY;
     }
 
-    public void setModel(SketchModel newModel) {
-        model = newModel;
+    public void setInteractionModel(InteractionModel newModel) {
+        interactionModel = newModel;
     }
 
-    public void setView(SketchView newView) {
-        view = newView;
+    public void setModel(SketchModel newModel) {
+        model = newModel;
     }
 
     public void handlePressed(MouseEvent event) {
@@ -33,7 +34,7 @@ public class SketchController {
         switch (currentState) {
             case READY:
                 System.out.println("I have started pressing");
-                model.startInk(event.getX(), event.getY());
+                interactionModel.startInk(event.getX(), event.getY());
                 currentState = State.INK_OR_UNSELECT;
                 break;
         }
@@ -47,30 +48,30 @@ public class SketchController {
         prevY = event.getY();
         switch (currentState) {
             case INK_OR_UNSELECT:
-                model.continueInk(event.getX(), event.getY());
+                interactionModel.continueInk(event.getX(), event.getY());
                 currentState = State.INKING;
             case INKING:
-                model.continueInk(event.getX(), event.getY());
+                interactionModel.continueInk(event.getX(), event.getY());
                 break;
             case DRAGGING:
-                model.moveShapes(dX, dY);
+                model.moveShapes(interactionModel.selectionSet, dX, dY);
                 break;
             case HANDLING:
                 break;
         }
-        view.draw();
+//        view.draw();
     }
 
     public void handleReleased(MouseEvent event) {
         switch (currentState) {
             case INK_OR_UNSELECT:
+                interactionModel.unSelect();
                 currentState = State.READY;
                 break;
             case INKING:
-                model.finishInk();
-                model.clearInk();
-                model.addLine(model.ink.x1, model.ink.y1, model.ink.x2, model.ink.y2);
-
+                interactionModel.finishInk();
+                interactionModel.clearInk();
+                model.addLine(interactionModel.ink.x1, interactionModel.ink.y1, interactionModel.ink.x2, interactionModel.ink.y2);
                 currentState = State.READY;
 //                view.draw();
                 break;

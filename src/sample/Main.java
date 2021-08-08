@@ -73,12 +73,16 @@ public class Main extends Application{
         root.getChildren().add(view);
 
         SketchModel model = new SketchModel();
+        InteractionModel interactionModel = new InteractionModel();
         SketchController controller = new SketchController();
 
+        model.addSubscriber(view);
+        interactionModel.addSubscriber(view);
+        view.setInteractionModel(interactionModel);
         view.setModel(model);
         view.setController(controller);
         controller.setModel(model);
-        controller.setView(view);
+        controller.setInteractionModel(interactionModel);
 
 //        Canvas myCanvas = new Canvas(1000, 1000);
 //        gc = myCanvas.getGraphicsContext2D();

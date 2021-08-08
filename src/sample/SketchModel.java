@@ -5,44 +5,35 @@ import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
 
 public class SketchModel {
-    ArrayList<XLine> items;
-    XLine selectedShape;
-    InkPath ink;
-    GraphicsContext gc;
-
+    ArrayList<Groupable> items;
+    ArrayList<SketchModelListener> subscribers;
 
     public SketchModel() {
         items = new ArrayList<>();
-        ink = new InkPath();
+        subscribers = new ArrayList<>();
     }
 
-    public void setGraphicsContext(GraphicsContext gcNew) {
-        gc = gcNew;
+    public void addSubscriber(SketchModelListener aSub) {
+        subscribers.add(aSub);
     }
 
     public void addLine(double x1, double y1, double x2, double y2) {
-        XLine xline = new XLine(x1, y1, x2, y2);
-//        items.add(xline);
-        xline.draw(gc);
+        items.add(new XLine(x1, y1, x2, y2));
+        notifySubscribers();
     }
 
-    public void startInk(double x, double y) {
-        ink.start(x, y);
+    public void moveShapes(ArrayList<Groupable> selectionSet, double dX, double dY) {
+        selectionSet.forEach(xs -> xs.move(dX, dY));
+        notifySubscribers();
     }
 
-    public void continueInk(double x, double y) {
-        ink.addPoint(x, y);
+    public void addItems(ArrayList<Groupable> gs) {
+        gs.forEach(g -> items.add(g));
+        notifySubscribers();
     }
 
-    public void moveShapes(double dX, double dY) {
-        items.get(0).move(dX, dY);
+    private void notifySubscribers() {
+        subscribers.forEach(sub -> sub.modelChanged());
     }
 
-    public void finishInk() {
-        ink.calculateLength();
-        ink.calculateRatios();
-    }
-    public void clearInk() {
-        ink.clear();
-    }
 }

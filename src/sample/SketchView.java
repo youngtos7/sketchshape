@@ -7,13 +7,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 
-public class SketchView extends Pane
+public class SketchView extends Pane implements SketchModelListener
     {
         Canvas myCanvas;
         GraphicsContext gc;
         double canvasWidth, canvasHeight;
         SVGPath inkPath;
         SketchModel model;
+        InteractionModel interactionModel;
+
 
         public SketchView() {
             canvasWidth = 1000;
@@ -27,7 +29,10 @@ public class SketchView extends Pane
 
         public void setModel(SketchModel newModel) {
             model = newModel;
-            model.setGraphicsContext(gc);
+        }
+        public void setInteractionModel(InteractionModel newInteractionModel) {
+            interactionModel = newInteractionModel;
+            interactionModel.setMainViewExtents(canvasWidth, canvasHeight);
         }
 
         public void setController(SketchController controller) {
@@ -39,13 +44,21 @@ public class SketchView extends Pane
             gc.clearRect(0, 0, canvasWidth, canvasHeight);
             gc.setStroke(Color.BLACK);
             gc.setLineWidth(2.0);
+
+            for (Groupable g : model.items) {
+                if (!interactionModel.selectionSet.contains(g)) {
+                    g.draw(gc);
+                }
+            }
+
             gc.setStroke(Color.GREEN);
             gc.beginPath();
-            gc.appendSVGPath(model.ink.svgPathContents);
+            gc.appendSVGPath(interactionModel.ink.svgPathContents);
             gc.stroke();
 //            gc.restore();
 //            System.out.println("Drawing View");
         }
+
         public void modelChanged() {
             draw();
         }
