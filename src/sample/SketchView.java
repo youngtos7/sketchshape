@@ -46,9 +46,9 @@ public class SketchView extends Pane implements SketchModelListener
             gc.setLineWidth(2.0);
 
             for (Groupable g : model.items) {
-                if (!interactionModel.selectionSet.contains(g)) {
+//                if (!interactionModel.selectionSet.contains(g)) {
                     g.draw(gc);
-                }
+//                }
             }
 
             gc.setStroke(Color.GREEN);

@@ -22,6 +22,11 @@ public class SketchModel {
         notifySubscribers();
     }
 
+    public void addRectangle(double left, double top, double right, double bottom) {
+        items.add(new XRectangle(left, top, right, bottom));
+        notifySubscribers();
+    }
+
     public void moveShapes(ArrayList<Groupable> selectionSet, double dX, double dY) {
         selectionSet.forEach(xs -> xs.move(dX, dY));
         notifySubscribers();

@@ -6,7 +6,6 @@ import javafx.scene.paint.Color;
 public class XLine extends XShape{
     double ratioA, ratioB, ratioC;
     double length;
-    double[] xs, ys, hxs, hys;
 
     public XLine(double nx1, double ny1, double nx2, double ny2) {
         xs = new double[2];

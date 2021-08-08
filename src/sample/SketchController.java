@@ -71,7 +71,8 @@ public class SketchController {
             case INKING:
                 interactionModel.finishInk();
                 interactionModel.clearInk();
-                model.addLine(interactionModel.ink.x1, interactionModel.ink.y1, interactionModel.ink.x2, interactionModel.ink.y2);
+                model.addRectangle(interactionModel.ink.left, interactionModel.ink.top, interactionModel.ink.right, interactionModel.ink.bottom);
+//                model.addLine(interactionModel.ink.x1, interactionModel.ink.y1, interactionModel.ink.x2, interactionModel.ink.y2);
                 currentState = State.READY;
 //                view.draw();
                 break;

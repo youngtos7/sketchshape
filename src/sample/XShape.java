@@ -5,7 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
 
 public abstract class XShape implements Groupable{
-    double[] xs, ys;
+    double[] xs, ys, hxs, hys;;
     double left, top, right, bottom;
 
 
