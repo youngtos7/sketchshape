@@ -51,6 +51,10 @@ public class SketchView extends Pane implements SketchModelListener
 //                }
             }
 
+            for (Groupable g : interactionModel.selectionSet) {
+                g.drawSelected(gc);
+            }
+
             gc.setStroke(Color.GREEN);
             gc.beginPath();
             gc.appendSVGPath(interactionModel.ink.svgPathContents);

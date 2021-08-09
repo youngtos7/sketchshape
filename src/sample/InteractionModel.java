@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class InteractionModel {
     XShape selectedShape;
-    ArrayList selectionSet;
+    ArrayList <Groupable>selectionSet;
     double mainViewWidth, mainViewHeight;
     InkPath ink;
     ArrayList<SketchModelListener> subscribers;
@@ -15,6 +15,15 @@ public class InteractionModel {
         selectionSet = new ArrayList<>();
         ink = new InkPath();
         selectedShape = null;
+    }
+
+    public void addSubtractSelection(Groupable xs) {
+        if (selectionSet.contains(xs)) {
+            selectionSet.remove(xs);
+        } else {
+            selectionSet.add(xs);
+        }
+        notifySubscribers();
     }
 
     public void setSelection(ArrayList set){

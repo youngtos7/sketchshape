@@ -27,9 +27,29 @@ public class SketchModel {
         notifySubscribers();
     }
 
+    public void addTriangle(double left, double top, double right, double bottom) {
+        items.add(new XTriangle(left, top, right, bottom));
+        notifySubscribers();
+    }
+
     public void moveShapes(ArrayList<Groupable> selectionSet, double dX, double dY) {
         selectionSet.forEach(xs -> xs.move(dX, dY));
         notifySubscribers();
+    }
+
+    public boolean checkHit(double x, double y) {
+        return items.stream()
+                .anyMatch(item -> item.contains(x, y));
+    }
+
+    public Groupable whichItem(double x, double y) {
+        Groupable found = null;
+        for (Groupable g : items) {
+            if (g.contains(x, y)) {
+                found = g;
+            }
+        }
+        return found;
     }
 
     public void addItems(ArrayList<Groupable> gs) {

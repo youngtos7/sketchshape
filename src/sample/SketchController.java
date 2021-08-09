@@ -33,9 +33,16 @@ public class SketchController {
 
         switch (currentState) {
             case READY:
-                System.out.println("I have started pressing");
-                interactionModel.startInk(event.getX(), event.getY());
-                currentState = State.INK_OR_UNSELECT;
+                if(model.checkHit(prevX, prevY)){
+                    Groupable selectedModel = model.whichItem(prevX, prevY);
+                    interactionModel.clearSelection();
+                    interactionModel.addSubtractSelection(selectedModel);
+                    currentState = State.DRAGGING;
+                } else {
+                    System.out.println("I have started pressing");
+                    interactionModel.startInk(event.getX(), event.getY());
+                    currentState = State.INK_OR_UNSELECT;
+                }
                 break;
         }
 //        view.draw();
@@ -71,10 +78,14 @@ public class SketchController {
             case INKING:
                 interactionModel.finishInk();
                 interactionModel.clearInk();
-                model.addRectangle(interactionModel.ink.left, interactionModel.ink.top, interactionModel.ink.right, interactionModel.ink.bottom);
-//                model.addLine(interactionModel.ink.x1, interactionModel.ink.y1, interactionModel.ink.x2, interactionModel.ink.y2);
+                switch (interactionModel.ink.bestMatch) {
+                    case RECTANGLE: model.addRectangle(interactionModel.ink.left, interactionModel.ink.top, interactionModel.ink.right, interactionModel.ink.bottom); break;
+                    case LINE: model.addLine(interactionModel.ink.x1, interactionModel.ink.y1, interactionModel.ink.x2, interactionModel.ink.y2); break;
+                    case TRIANGLE: model.addTriangle(interactionModel.ink.x1, interactionModel.ink.y1, interactionModel.ink.x2, interactionModel.ink.y2); break;
+                }
+                System.out.println("Ticking....");
+
                 currentState = State.READY;
-//                view.draw();
                 break;
             case DRAGGING:
                 currentState = State.READY;

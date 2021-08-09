@@ -71,9 +71,61 @@ public class InkPath {
     private double dist(double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
+
     public void calculateRatios() {
         bestMatch = ShapeType.NONE;
         double bestRatio = Double.MAX_VALUE;
+        // rectangle
+        double rectRatio = Math.abs(1.0 - length / bboxLength);
+        // System.out.println("Rectangle: " + rectRatio);
+        if (rectRatio < bestRatio) {
+            bestRatio = rectRatio;
+            bestMatch = ShapeType.RECTANGLE;
+        }
+        // ellipse
+//        double a = (right - left) / 2;
+//        double b = (bottom - top) / 2;
+//        double ellipseCirc = 2 * Math.PI * Math.sqrt((a * a + b * b) / 2);
+//        double ellipseRatio = Math.abs(1.0 - length / ellipseCirc);
+//        System.out.println("Ellipse: " + ellipseRatio);
+//        if (ellipseRatio < bestRatio) {
+//            bestRatio = ellipseRatio;
+//            bestMatch = ShapeType.CIRCLE;
+//        }
+
+        // circle
+//        double xr = (right - left) / 2;
+//        double yr = (bottom - top) / 2;
+//        double r = Math.min(xr, yr);
+//        double circ = 2 * Math.PI * r;
+//        double circleRatio = Math.abs(1.0 - length / circ);
+//        System.out.println("Circle: " + circleRatio + "  Raw: " + (length / circ));
+//        if (circleRatio < bestRatio && minCorner > 10) {
+//            bestRatio = circleRatio;
+//            bestMatch = ShapeType.CIRCLE;
+//        }
+        // line
+        double lineDist = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        double lineRatio = Math.abs(1.0 - length / lineDist);
+        // System.out.println("Line: " + lineRatio);
+        if (lineRatio < bestRatio) {
+            bestRatio = lineRatio;
+            bestMatch = ShapeType.LINE;
+        }
+        // triangle
+        double centreX = (right + left) / 2;
+        double triangleDist = (right - left) + dist(left, bottom, centreX, top) +
+                dist(right, bottom, centreX, top);
+        double triangleRatio = Math.abs(1.0 - length / triangleDist);
+        System.out.println("Triangle: " + triangleRatio +
+                "  Raw: " + (length / triangleDist));
+        System.out.println("MinDist to corner: " + minCorner);
+        if (triangleRatio < bestRatio && minCorner < 10) {
+            bestRatio = triangleRatio;
+            bestMatch = ShapeType.TRIANGLE;
+        }
+
+        // check whether best is good enough
         if (bestRatio > 0.15) {
             bestMatch = ShapeType.NONE;
         }
